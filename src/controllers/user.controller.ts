@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services';
 import { getErrorMessage } from '../utils';
-import { RequestWithUser } from '../types';
 
 const userService = new UserService()
 export class UserController {

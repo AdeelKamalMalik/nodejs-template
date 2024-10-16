@@ -3,10 +3,8 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import {
-  CreateUserDTO, GenerateTokenDTO, UserDTO, createUserMapper, generateTokenMapper,
-  userMapper
-} from '../dto';
+import { userMapper, createUserMapper, generateTokenMapper } from '../dto/user/mappers';
+import { CreateUserDTO, UserDTO, GenerateTokenDTO } from '../dto/user/user-dto';
 
 export class UserService {
   private userRepository: Repository<User>;

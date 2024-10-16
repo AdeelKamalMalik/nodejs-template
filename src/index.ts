@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 import { initializeDataSource, closeDataSource } from "./data-source";
-import { userRoutes } from "./routes";
+import { blogRoutes, userRoutes } from "./routes";
 import { Request, Response } from 'express';
 
 import { authenticateToken } from "./middleware";
@@ -26,6 +26,7 @@ app.use(cors(corsOptions));
     console.log('Database connection established');
 
     app.use('/api/users', authenticateToken, userRoutes);
+    app.use('/api/blogs', blogRoutes);
 
     app.get('/', (req: Request, res: Response) => {
       return res.status(200).json({ message: "PONG" })

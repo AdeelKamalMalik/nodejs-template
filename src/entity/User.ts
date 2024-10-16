@@ -7,9 +7,11 @@ import {
   Unique,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { AppDataSource } from '../data-source';
+import { Blog } from './Blog';
 
 @Entity('users')
 @Unique(['username'])
@@ -41,6 +43,8 @@ export class User {
 	@UpdateDateColumn()
 	updated_at!: Date;
 
+  @OneToMany(() => Blog, (blog) => blog.user)
+  blogs: Blog[];
 
   // Hash password before saving to DB
   @BeforeInsert()
@@ -61,7 +65,7 @@ export class User {
     let userExists = await userRepository.findOne({ where: { username } });
 
     let count = 1;
-    // If a user with the same username exists, append a number and check again
+
     while (userExists) {
       username = `${baseUsername}${count}`;
       userExists = await userRepository.findOne({ where: { username } });

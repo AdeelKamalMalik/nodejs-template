@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { UserService } from '../services';
 import { getErrorMessage } from '../utils';
 import { RequestWithUser } from '../types';
-import { userMapper } from '../dto';
 import { User } from '../entity/User';
+import { userMapper } from '../dto/user/mappers';
 
 const userService = new UserService()
 
