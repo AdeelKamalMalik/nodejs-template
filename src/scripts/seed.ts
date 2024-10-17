@@ -1,87 +1,66 @@
-import { Role } from '../entity/Role';
 import { User } from '../entity/User';
+import { Blog } from '../entity/Blog';
 import { AppDataSource } from '../data-source';
-import { Account } from '../entity/Account';
 
 const seed = async () => {
   await AppDataSource.initialize();
 
-  const roleRepository = AppDataSource.getRepository(Role);
-  const accountRepository = AppDataSource.getRepository(Account);
   const userRepository = AppDataSource.getRepository(User);
+  const blogRepository = AppDataSource.getRepository(Blog);
 
-  // Ensure roles exist
-  const roles = ['Super Admin', 'Admin', 'User'];
-  for (const roleName of roles) {
-    let role = await roleRepository.findOne({ where: { name: roleName } });
-    if (!role) {
-      role = new Role();
-      role.name = roleName;
-      await roleRepository.save(role);
-    }
+  // Find or create the user
+  let admin = await userRepository.findOne({ where: { email: 'admin@blog.com' } });
+
+  if (!admin) {
+    admin = new User();
+    admin.email = 'admin@blog.com';
+    admin.password = 'Admin@123';
+    admin.firstName = 'First';
+    admin.lastName = 'User';
+    admin.avatar = 'https://i.pravatar.cc/300';
+
+    admin = await userRepository.save(admin);
+    console.log('New user created:', admin);
+  } else {
+    console.log('User already exists');
   }
 
-  console.log("Roles created!")
+  // Create blog entries for the user
+  const blogs = [
+    {
+      title: 'First Blog Post',
+      body: 'This is the body of the first blog post.',
+    },
+    {
+      title: 'Second Blog Post',
+      body: 'This is the body of the second blog post.',
+    },
+    {
+      title: 'Another Blog Post',
+      body: 'This is the body of another blog post.',
+    },
+  ];
 
-  const accounts = ['Super Admin', 'Admin', 'User'];
-  for (const accountName of accounts) {
-    let account = await accountRepository.findOne({ where: { name: accountName } });
-    if (!account) {
-      account = new Account();
-      account.name = accountName;
-      await accountRepository.save(account);
-    }
-  }
+  for (const blogData of blogs) {
+    let blog = await blogRepository.findOne({ where: { title: blogData.title, user: { id: admin.id } } });
 
-  console.log("Accounts created!")
+    // Create the blog if it doesn't already exist
+    if (!blog) {
+      blog = new Blog();
+      blog.title = blogData.title;
+      blog.body = blogData.body;
+      blog.image = `https://dummyimage.com/600x400/000/fff.png&text=${encodeURIComponent(blog.title)}`;
+      blog.user = admin;
 
-
-  // Ensure super admin user exists
-  const superAdminRole = await roleRepository.findOne({ where: { name: 'Super Admin' } });
-  const superAdminAccount = await accountRepository.findOne({ where: { name: 'Super Admin' } });
-  
-  if (superAdminRole && superAdminAccount) {
-    let superAdmin = await userRepository.findOne({ where: { email: 'admin@wp.com' } });
-    
-    if (!superAdmin) {
-      superAdmin = new User();
-      superAdmin.email = 'admin@wp.com';
-      superAdmin.password = 'Admin@123';
-      superAdmin.first_name = 'Super';
-      superAdmin.last_name = 'Admin';
-      superAdmin.role = superAdminRole;
-      superAdmin.account = superAdminAccount;
-      const user = await userRepository.save(superAdmin);
-      console.log("New user: ", user)
-      console.log('Super Admin created!')
+      await blogRepository.save(blog);
+      console.log(`Blog "${blog.title}" created with slug "${blog.slug}"`);
     } else {
-      console.log("Super user already exists")
-    }
-  }
-
-  const userRole = await roleRepository.findOne({ where: { name: 'User' } });
-  const userAccount = await accountRepository.findOne({ where: { name: 'User' } });
-  
-  if (userRole && userAccount) {
-    let testUser = await userRepository.findOne({ where: { email: 'user@wp.com' } });
-    
-    if (!testUser) {
-      testUser = new User();
-      testUser.email = 'user@wp.com';
-      testUser.password = 'Admin@123';
-      testUser.first_name = 'Test';
-      testUser.last_name = 'User';
-      testUser.role = userRole;
-      testUser.account = userAccount;
-      const user = await userRepository.save(testUser);
-      console.log("Test user: ", user)
-      console.log('Test User created!')
-    } else {
-      console.log("Test user already exists")
+      console.log(`Blog "${blog.title}" already exists for user ${admin.email}`);
     }
   }
 
   await AppDataSource.destroy();
+  console.log('Seeding completed successfully.');
 };
 
 seed().catch((error) => console.error('Error during seeding:', error));

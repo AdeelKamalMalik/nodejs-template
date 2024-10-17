@@ -17,7 +17,9 @@ export const config = {
     password: process.env.DB_PASSWORD || '1234',
     database: process.env.DB_DATABASE || 'backend_dev',
   },
-  logtail: {
-    sourceToken: process.env.LOGTAIL_TOKEN || ''
-  }
+  cloudinary: {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
+    api_key: process.env.CLOUDINARY_API_KEY || '',
+    api_secret: process.env.CLOUDINARY_API_SECRET || '',
+  },
 };

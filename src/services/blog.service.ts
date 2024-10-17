@@ -3,27 +3,30 @@ import { AppDataSource } from '../data-source';
 import { Blog } from '../entity/Blog';
 import { User } from '../entity/User';
 import { BlogDTO } from '../dto/blog/blog-dto';
+import { UserService } from './user.service';
 
 export class BlogService {
   private blogRepository: Repository<Blog>;
-  private userRepository: Repository<User>;
+  private userService: UserService;
 
   constructor() {
     if (!AppDataSource.isInitialized) {
       AppDataSource.initialize().then(() => {
-        this.userRepository = AppDataSource.getRepository(User);
+        this.userService = new UserService();
+        this.blogRepository = AppDataSource.getRepository(Blog);
       }).catch(error => {
         console.error('Error during Data Source initialization:', error);
       });
     } else {
       this.blogRepository = AppDataSource.getRepository(Blog);
-      this.userRepository = AppDataSource.getRepository(User);
-    } 
+      this.userService = new UserService();
+    }
   }
 
   async createBlog(payload: BlogDTO): Promise<Blog> {
-    const { body, image, title, userId} = payload
-    const user = await this.userRepository.findOneBy({ id: userId });
+    const { body, image, title, userId } = payload
+    const user = await this.userService.getUserById(userId);
+    
     if (!user) throw new Error('User not found');
 
     const blog = this.blogRepository.create({ title, body, user, image });
@@ -49,7 +52,7 @@ export class BlogService {
   async incrementBlogViews(slug: string): Promise<Blog | null> {
     const blog = await this.getSingleBlog(slug);
     if (!blog) throw new Error('Blog not found');
-    
+
     blog.views += 1;
     return await this.blogRepository.save(blog);
   }

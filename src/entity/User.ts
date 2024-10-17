@@ -60,7 +60,7 @@ export class User {
   @BeforeInsert()
   async generateUsername() {
     const userRepository = AppDataSource.getRepository(User);
-    let baseUsername = `${this.firstName}.${this.lastName}`.toLowerCase();
+    let baseUsername = `${this.firstName}-${this.lastName}`.toLowerCase();
     let username = baseUsername;
     let userExists = await userRepository.findOne({ where: { username } });
 

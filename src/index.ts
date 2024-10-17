@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import express from "express";
 import cors from "cors";
+import multer from "multer"; // Import Multer
 import { initializeDataSource, closeDataSource } from "./data-source";
-import { blogRoutes, userRoutes } from "./routes";
+import { authRoutes, blogRoutes, userRoutes } from "./routes";
 import { Request, Response } from 'express';
 
 import { authenticateToken } from "./middleware";
@@ -12,9 +13,9 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
 };
 
 app.use(cors(corsOptions));
@@ -25,11 +26,12 @@ app.use(cors(corsOptions));
     await initializeDataSource();
     console.log('Database connection established');
 
+    app.use('/api/auth', authRoutes);
     app.use('/api/users', authenticateToken, userRoutes);
     app.use('/api/blogs', blogRoutes);
 
     app.get('/', (req: Request, res: Response) => {
-      return res.status(200).json({ message: "PONG" })
+      return res.status(200).json({ message: "PONG" });
     });
 
     const PORT = process.env.PORT || 3000;
