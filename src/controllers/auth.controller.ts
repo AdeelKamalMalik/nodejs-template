@@ -49,7 +49,7 @@ export class AuthController {
       }
 
       const { jwt, updated_at } = userService.generateJWT(user);
-      return res.status(200).json({ jwt, updated_at });
+      return res.status(200).json({ jwt, updated_at, user });
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });
     }

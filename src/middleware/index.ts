@@ -12,7 +12,7 @@ export const authenticateToken = async (req: any, res: Response, next: NextFunct
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     const user = await userService.getUserById((decoded as any).id);
-    
+
     if (!user) return res.sendStatus(403);
 
     req.user_id = user.id;

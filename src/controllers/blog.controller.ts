@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { BlogService } from '../services';
-import { RequestWithUser } from '../types';
+import { GetBlogsPayload, RequestWithUser } from '../types';
 import cloudinary from '../config/cloudinary';
 
 const blogService = new BlogService()
@@ -35,9 +35,27 @@ export class BlogController {
 
   async updateBlog(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      console.log(req.params, "::::::::")
+      const { slug } = req.params;
       const updates = req.body;
-      const updatedBlog = await blogService.updateBlog(id, updates);
+      const image = req.file;
+        
+      let imageUrl: string | null = null;
+  
+      if (image) {
+        imageUrl = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream((error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result?.secure_url);
+          });
+
+          uploadStream.end(image.buffer);
+        });
+      }
+
+      const updatedBlog = await blogService.updateBlog(slug, {...updates, image: imageUrl });
       res.status(200).json(updatedBlog);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -46,7 +64,7 @@ export class BlogController {
 
   async getAllBlogs(req: Request, res: Response) {
     try {
-      const blogs = await blogService.getAllBlogs();
+      const blogs = await blogService.getAllBlogs(req.query as unknown as GetBlogsPayload);
       res.status(200).json(blogs);
     } catch (error) {
       res.status(400).json({ message: error.message });
