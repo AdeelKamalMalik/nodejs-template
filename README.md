@@ -14,8 +14,8 @@ This is a Node.js-based blog site project built with TypeScript and PostgreSQL, 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd <project-directory>
+   git clone git@github.com:AdeelKamalMalik/nodejs-template.git
+   cd nodejs-template
    ```
 
 2. Install dependencies:
