@@ -4,7 +4,6 @@ import { getErrorMessage } from '../utils';
 import { RequestWithUser } from '../types';
 import { User } from '../entity/User';
 import { userMapper } from '../dto/user/mappers';
-import multer from 'multer';
 import cloudinary from '../config/cloudinary';
 
 const userService = new UserService()

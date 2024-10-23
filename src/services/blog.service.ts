@@ -1,8 +1,7 @@
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { Blog } from '../entity/Blog';
-import { User } from '../entity/User';
-import { BlogDTO } from '../dto/blog/blog-dto';
+import { BlogDTO, GetBlogsResponseDTO } from '../dto/blog/blog-dto';
 import { UserService } from './user.service';
 import { GetBlogsPayload } from '../types';
 
@@ -46,22 +45,35 @@ export class BlogService {
     return await this.blogRepository.save(blog);
   }
 
-  async getAllBlogs(payload: GetBlogsPayload): Promise<Blog[]> {
+  async getAllBlogs(payload: GetBlogsPayload): Promise<GetBlogsResponseDTO[]> {
     const { limit, page, search } = payload;
   
     const queryBuilder = this.blogRepository.createQueryBuilder('blog');
   
-    // Add user association
     queryBuilder.leftJoinAndSelect('blog.user', 'user');
+  
+    queryBuilder
+      .leftJoin('blog.comments', 'comments')
+      .addSelect('COUNT(comments.id)', 'commentsCount');
   
     if (search) {
       queryBuilder.where('blog.title ILIKE :search', { search: `%${search}%` });
     }
-    
+  
     queryBuilder.skip((page - 1) * limit).take(limit);
   
-    return await queryBuilder.getMany();
+    queryBuilder.groupBy('blog.id, user.id');
+  
+    const blogs = await queryBuilder.getRawAndEntities();
+  
+    const blogsWithCommentCount = blogs.entities.map((blog, index) => ({
+      ...blog,
+      comments: parseInt(blogs.raw[index].commentsCount, 10)
+    }));
+  
+    return blogsWithCommentCount;
   }
+  
 
   async getSingleBlog(slug: string): Promise<Blog | null> {
     return await this.blogRepository.findOneBy({ slug });

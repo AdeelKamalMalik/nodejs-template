@@ -1,9 +1,8 @@
 import "reflect-metadata";
 import express from "express";
 import cors from "cors";
-import multer from "multer"; // Import Multer
 import { initializeDataSource, closeDataSource } from "./data-source";
-import { authRoutes, blogRoutes, userRoutes } from "./routes";
+import { authRoutes, blogRoutes, commentRoutes, userRoutes } from "./routes";
 import { Request, Response } from 'express';
 
 import { authenticateToken } from "./middleware";
@@ -29,6 +28,7 @@ app.use(cors(corsOptions));
     app.use('/api/auth', authRoutes);
     app.use('/api/users', authenticateToken, userRoutes);
     app.use('/api/blogs', blogRoutes);
+    app.use('/api', commentRoutes);
 
     app.get('/', (req: Request, res: Response) => {
       return res.status(200).json({ message: "PONG" });
@@ -46,6 +46,6 @@ app.use(cors(corsOptions));
     });
   } catch (error) {
     console.error('Error connecting to database:', error);
-    process.exit(1); // Exit with failure code
+    process.exit(1);
   }
 })();

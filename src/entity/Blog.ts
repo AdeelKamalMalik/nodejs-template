@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, Unique, OneToMany } from 'typeorm';
 import { User } from './User';
 import { AppDataSource } from '../data-source';
+import { Comment } from './Comment';
 
 @Entity('blogs')
 @Unique(['slug'])
@@ -25,6 +26,9 @@ export class Blog {
 
   @ManyToOne(() => User, (user) => user.blogs, { eager: true })
   user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.blog)
+  comments: Comment[];
 
   @BeforeInsert()
   @BeforeUpdate()

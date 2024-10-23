@@ -12,6 +12,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { AppDataSource } from '../data-source';
 import { Blog } from './Blog';
+import { Comment } from './Comment';
 
 @Entity('users')
 @Unique(['username'])
@@ -45,6 +46,9 @@ export class User {
 
   @OneToMany(() => Blog, (blog) => blog.user)
   blogs: Blog[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   // Hash password before saving to DB
   @BeforeInsert()

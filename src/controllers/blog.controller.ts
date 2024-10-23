@@ -35,7 +35,6 @@ export class BlogController {
 
   async updateBlog(req: Request, res: Response) {
     try {
-      console.log(req.params, "::::::::")
       const { slug } = req.params;
       const updates = req.body;
       const image = req.file;
