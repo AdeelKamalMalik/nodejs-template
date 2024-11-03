@@ -28,16 +28,39 @@ const seed = async () => {
   // Create blog entries for the user
   const blogs = [
     {
-      title: 'First Blog Post',
-      body: 'This is the body of the first blog post.',
+      title: 'Unlocking the Power of JavaScript: A Guide for Beginners',
+      body: 'JavaScript is more than just a programming language; it’s the core of modern web development. In this article, we explore essential concepts, from variables to functions, to help you kickstart your coding journey.',
+      author: 'John Doe',
+      date: '2023-05-12',
+      tags: ['JavaScript', 'Web Development', 'Programming Basics']
     },
     {
-      title: 'Second Blog Post',
-      body: 'This is the body of the second blog post.',
+      title: 'Understanding Asynchronous Programming in Node.js',
+      body: 'Handling asynchronous tasks efficiently is critical for building high-performance applications in Node.js. Learn how to use callbacks, promises, and async/await to manage asynchronous code and improve your app’s responsiveness.',
+      author: 'Jane Smith',
+      date: '2023-06-20',
+      tags: ['Node.js', 'Asynchronous Programming', 'Backend Development']
     },
     {
-      title: 'Another Blog Post',
-      body: 'This is the body of another blog post.',
+      title: '10 Tips to Improve Your Coding Productivity',
+      body: 'Boosting productivity as a developer involves more than just writing code. From organizing your workspace to leveraging code automation tools, here are ten tips to help you code more efficiently.',
+      author: 'Emily Chen',
+      date: '2023-07-15',
+      tags: ['Productivity', 'Developer Tools', 'Coding Tips']
+    },
+    {
+      title: 'Building RESTful APIs with Express',
+      body: 'Creating RESTful APIs with Express allows for seamless communication between your application and client-side. This guide covers the essentials of setting up routes, handling requests, and sending responses in an Express application.',
+      author: 'Michael Brown',
+      date: '2023-08-03',
+      tags: ['Express', 'API Development', 'Backend']
+    },
+    {
+      title: 'The Future of Web Development: Trends to Watch in 2024',
+      body: 'As technology evolves, so does web development. In this article, we look at the latest trends shaping the future, from AI integration to WebAssembly and more, helping you stay ahead in the digital landscape.',
+      author: 'Sophia Lee',
+      date: '2023-10-05',
+      tags: ['Web Development', 'Future Trends', 'Technology']
     },
   ];
 
